@@ -1,0 +1,35 @@
+name: Create and Setup SWA Infrastructure
+
+on:
+  workflow_dispatch
+
+env:
+  ResourceGroup: rg-sdilab
+  Region: westeurope
+
+jobs:
+  swa-create:
+    name: Ensure SWA is Created
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create SWA
+        id: create-swa
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.42.0
+          inlineScript: |
+            az group create -n $ResourceGroup -l $Region
+            az deployment group create `
+              --resource-group $ResourceGroup `
+              --template-file Templates\main.bicep `
+              --template-parameters-file Environments\development.parameters.json
