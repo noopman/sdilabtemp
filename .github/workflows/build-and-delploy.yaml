@@ -38,61 +38,61 @@ jobs:
           az group list
           pwd
 
-  # build-and-test:
-  #   # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
-  #   runs-on: ubuntu-latest
-  #   name: Deploy
-  #   steps:
-  #     # - uses: actions/checkout@v3
-  #     #   with:
-  #     #     submodules: false
+  build-and-test:
+    # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      # - uses: actions/checkout@v3
+      #   with:
+      #     submodules: false
 
-  #     # - name: Setup .NET
-  #     #   uses: actions/setup-dotnet@v3
-  #     #   with:
-  #     #     dotnet-version: '7.0.x'
-  #     #     include-prerelease: false
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v3
+      #   with:
+      #     dotnet-version: '7.0.x'
+      #     include-prerelease: false
 
-  #     # - name: 'Run Tests'
-  #     #   run: dotnet test --configuration Release **/*Tests.csproj   
+      # - name: 'Run Tests'
+      #   run: dotnet test --configuration Release **/*Tests.csproj   
           
-  #     # - name: Client Build
-  #     #   run: dotnet publish ./Client/Client.csproj --output ./dist/client
+      # - name: Client Build
+      #   run: dotnet publish ./Client/Client.csproj --output ./dist/client
 
-  #     # - name: Api Build
-  #     #   run: dotnet publish ./Api/Api.csproj --output ./dist/api
+      # - name: Api Build
+      #   run: dotnet publish ./Api/Api.csproj --output ./dist/api
 
-  #     # - name: Azure Login
-  #     #   uses: azure/login@v1
-  #     #   with:
-  #     #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # - name: Azure Login
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-  #     - name: Az CLI login
-  #       uses: azure/login@v1
-  #       with:
-  #           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-  #           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-  #           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Az CLI login
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           
-  #     - name: Get SWA deployment token
-  #       id: get-secret-from-cli
-  #       uses: azure/CLI@v1
-  #       with:
-  #         azcliversion: 2.42.0
-  #         inlineScript: |
-  #           SWA_SECRETS=$(az staticwebapp secrets list -n $SwaName -g $ResourceGroup --query 'properties.apiKey' -o tsv )
-  #           echo "::add-mask::$SWA_SECRETS"
-  #           echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
+      - name: Get SWA deployment token
+        id: get-secret-from-cli
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.42.0
+          inlineScript: |
+            SWA_SECRETS=$(az staticwebapp secrets list -n $SwaName -g $ResourceGroup --query 'properties.apiKey' -o tsv )
+            echo "::add-mask::$SWA_SECRETS"
+            echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
 
-  #     - name: Install Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16.14.2
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
 
-  #     - name: Deploy Artifacts to SWA
-  #       run: |
-  #         npm install -g @azure/static-web-apps-cli
-  #         swa deploy -a dist/client/wwwroot -i dist/api --deployment-token ${{ steps.get-secret-from-cli.outputs.SWA_SECRETS }} --env production
+      - name: Deploy Artifacts to SWA
+        run: |
+          npm install -g @azure/static-web-apps-cli
+          swa deploy -a dist/client/wwwroot -i dist/api --deployment-token ${{ steps.get-secret-from-cli.outputs.SWA_SECRETS }} --env production
 
   # build_and_deploy_job:
   #   #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
