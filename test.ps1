@@ -1,0 +1,1 @@
+az deployment group create --resource-group rg-sdilab2 --template-file Templates/main.bicep --parameters Environments/development.parameters.json
