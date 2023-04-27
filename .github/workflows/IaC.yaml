@@ -3,6 +3,10 @@ name: Create and Setup SWA Infrastructure
 on:
   workflow_dispatch
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   ResourceGroup: rg-sdilab
   Region: westeurope
