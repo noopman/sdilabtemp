@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  ResourceGroup: rg-sdilab
+  ResourceGroup: rg-sdilab2
   Region: westeurope
 
 jobs:
