@@ -34,18 +34,17 @@ jobs:
         with:
           azcliversion: 2.42.0
           inlineScript: |
-            # az group create -n $ResourceGroup -l $Region
-            # output = (az deployment group create `
-            #   --resource-group $ResourceGroup `
-            #   --template-file Templates\main.bicep `
-            #   --template-parameters-file Environments\development.parameters.json)
+            az group create -n $ResourceGroup -l $Region
+            result = $(az deployment group create `
+              --resource-group $ResourceGroup `
+              --template-file Templates\main.bicep `
+              --template-parameters-file Environments\development.parameters.json)
             # echo "::set-output name=swa-name::$(output | ConvertFrom-Json).properties.outputs.swaName.value"
-            echo "test=hello" >> "$GITHUB_OUTPUT"
+            echo "swa-name=$(result | ConvertFrom-Json).properties.outputs.swaName.value" >> "$GITHUB_OUTPUT"
 
       - name: Write value
         uses: azure/CLI@v1
         with:
           azcliversion: 2.42.0
           inlineScript: |
-            echo "The name is: ${{ steps.create-swa.outputs.test }}"
-            # echo "The name is: ${{ steps.create-swa.outputs.swa-name }}"
+            echo "The name is: ${{ steps.create-swa.outputs.swa-name }}"
