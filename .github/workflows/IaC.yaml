@@ -9,7 +9,7 @@ permissions:
 
 env:
   ResourceGroup: rg-sdilab
-  Region: westeurope
+  Region: swedencentral
 
 jobs:
   swa-create:
