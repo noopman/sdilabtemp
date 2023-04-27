@@ -43,9 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     steps:
-      # - uses: actions/checkout@v3
-      #   with:
-      #     submodules: false
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
 
       # - name: Setup .NET
       #   uses: actions/setup-dotnet@v3
