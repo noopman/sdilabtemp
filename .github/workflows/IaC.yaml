@@ -38,7 +38,7 @@ jobs:
             result = $( az deployment group create \
               --resource-group $ResourceGroup \
               --template-file Templates\main.bicep \
-              --template-parameters-file Environments\development.parameters.json )
+              --parameters Environments\development.parameters.json )
             echo "The result is: $result"
             echo "swa-name=$(result | ConvertFrom-Json).properties.outputs.swaName.value" >> "$GITHUB_OUTPUT"
             # echo "::set-output name=swa-name::$(output | ConvertFrom-Json).properties.outputs.swaName.value"
