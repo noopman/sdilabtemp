@@ -63,16 +63,12 @@ jobs:
               exit 1
             fi
 
-            echo "rg=$rg"
-            echo "param=$param"
-            exit 0
-
             az group create -n $rg -l $Region
 
             res=$(az deployment group create \
               --resource-group $rg \
-              --template-file "Templates/main.bicep" \
               --parameters $param \
+              --template-file "Templates/main.bicep" \
               --query "properties.outputs.swaName.value")
 
             echo "swaName=$res" >> $GITHUB_OUTPUT
