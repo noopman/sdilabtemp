@@ -75,7 +75,7 @@ jobs:
               --parameters $param \
               --template-file "Templates/main.bicep" \
               --query "properties.outputs.swaName.value")
-            echo $res
+            echo "The SWA app name: $res"
 
             echo "resourceGroup=$rg" >> $GITHUB_OUTPUT
             echo "swaName=$res" >> $GITHUB_OUTPUT
@@ -130,6 +130,7 @@ jobs:
         with:
           azcliversion: 2.42.0
           inlineScript: |
+            echo "The SWA app to deploy to: $swaName"
             SWA_SECRETS=$(az staticwebapp secrets list -n $swaName -g $resourceGroup --query 'properties.apiKey' -o tsv )
             echo "::add-mask::$SWA_SECRETS"
             echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
