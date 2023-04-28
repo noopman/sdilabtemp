@@ -51,13 +51,13 @@ jobs:
             if [ $AppEnvironment == "Development" ]
             then
               echo "Using development parameters"
-              $ResourceGroup = $ResourceGroup + "-dev"
-              $ParametersFile='Environments/development.parameters.json'
+              $ResourceGroup="$ResourceGroup-dev"
+              $ParametersFile="Environments/development.parameters.json"
             elif [ $AppEnvironment == "Demo" ]
             then
               echo "Using demo parameters"
-              $ResourceGroup = $ResourceGroup + '-demo'
-              $ParametersFile='Environments/demo.parameters.json'
+              $ResourceGroup = "$ResourceGroup-demo"
+              $ParametersFile="Environments/demo.parameters.json"
             else
               echo "Unknown environment"
               exit 1
@@ -71,9 +71,9 @@ jobs:
 
             res=$(az deployment group create \
               --resource-group $ResourceGroup \
-              --template-file 'Templates/main.bicep' \
+              --template-file "Templates/main.bicep" \
               --parameters $ParametersFile \
-              --query 'properties.outputs.swaName.value')
+              --query "properties.outputs.swaName.value")
 
             echo "swaName=$res" >> $GITHUB_OUTPUT
 
