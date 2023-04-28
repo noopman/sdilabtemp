@@ -126,11 +126,9 @@ jobs:
           azcliversion: 2.42.0
           inlineScript: |
             echo "The SWA app to deploy to: $resourceGroup/$swaName"
-            echo "Ending in error."
-            exit 1
             SWA_SECRETS=$(az staticwebapp secrets list -n $swaName -g $resourceGroup --query 'properties.apiKey' -o tsv)
             echo "::add-mask::$SWA_SECRETS"
-            echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
+            echo "SWA_SECRETS=$SWA_SECRETS" >> $GITHUB_OUTPUT
 
       - name: Install Node
         uses: actions/setup-node@v3
