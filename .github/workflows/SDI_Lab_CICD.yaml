@@ -63,8 +63,13 @@ jobs:
               exit 1
             fi
 
+            echo "Subscription: $Subscription"
+            az account set --subscription $Subscription
+
+            echo "Resource group: $rg"
             az group create -n $rg -l $Region
 
+            echo "Parameters: $param"
             res=$(az deployment group create \
               --resource-group $rg \
               --parameters $param \

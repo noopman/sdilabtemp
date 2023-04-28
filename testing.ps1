@@ -16,5 +16,3 @@ $var = az deployment group create `
   --template-file 'Templates/main.bicep' `
   --parameters 'Environments/development.parameters.json' `
   --query "properties.outputs.swaName.value"
-
-$var.trim('"')
