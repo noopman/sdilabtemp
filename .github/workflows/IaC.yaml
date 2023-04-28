@@ -39,7 +39,7 @@ jobs:
               --resource-group $ResourceGroup \
               --template-file 'Templates/main.bicep' \
               --parameters 'Environments/development.parameters.json' \
-              --query 'properties.outputs.swaName.value').Trim('"')
+              --query 'properties.outputs.swaName.value') #.Trim('"')
             echo "::set-output name=swa-name::$res"
             # echo "swa-name=$(( | ConvertFrom-Json).properties.outputs.swaName.value)" >> "$GITHUB_OUTPUT"
             # echo "::set-output name=swa-name::$((output | ConvertFrom-Json).properties.outputs.swaName.value)"
