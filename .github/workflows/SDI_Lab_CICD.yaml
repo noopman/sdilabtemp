@@ -63,14 +63,14 @@ jobs:
               exit 1
             fi
 
-            # echo "Selecting subscription."
-            # az account set --subscription $Subscription
-            # echo "Subscription: $(az account show --query "name")"
+            echo "Selecting subscription."
+            az account set --subscription $Subscription
+            echo "Subscription: $(az account show --query "name")"
 
-            # echo "Resource group: $rg"
+            echo "Resource group: $rg"
             # az group create -n $rg -l $Region
 
-            # echo "Parameters: $param"
+            echo "Parameters: $param"
             # res=$(az deployment group create \
             #   --resource-group $rg \
             #   --parameters $param \
@@ -80,13 +80,6 @@ jobs:
 
             echo "resourceGroup=$rg" >> $GITHUB_OUTPUT
             echo "swaName=$res" >> $GITHUB_OUTPUT
-
-      # - name: Write value
-      #   uses: azure/CLI@v1
-      #   with:
-      #     azcliversion: 2.42.0
-      #     inlineScript: |
-      #       echo "The name is: ${{ steps.createSWA.outputs.swaName }}"
 
   deploySDILab:
     # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
