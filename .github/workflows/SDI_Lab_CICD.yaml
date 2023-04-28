@@ -19,7 +19,7 @@ env:
   Subscription: 42418c1f-e6af-41ea-aa9e-41ba0fbff635 # Hard coded for now
   Region: westeurope
   AppEnvironment: Development # Or Demo
-  ResourceGroup: rg-sdilab
+  ResourceGroupPrefix: rg-sdilab
 
 jobs:
 
@@ -56,7 +56,7 @@ jobs:
             elif [ $AppEnvironment == "Demo" ]
             then
               echo "Using demo parameters"
-              $ResourceGroup = "$ResourceGroup-demo"
+              rg = "$ResourceGroup-demo"
               param="Environments/demo.parameters.json"
             else
               echo "Unknown environment"
@@ -70,7 +70,9 @@ jobs:
               --parameters $param \
               --template-file "Templates/main.bicep" \
               --query "properties.outputs.swaName.value")
+            echo $res
 
+            echo "resourceGroup=$rg" >> $GITHUB_OUTPUT
             echo "swaName=$res" >> $GITHUB_OUTPUT
 
       # - name: Write value
@@ -79,6 +81,98 @@ jobs:
       #     azcliversion: 2.42.0
       #     inlineScript: |
       #       echo "The name is: ${{ steps.createSWA.outputs.swaName }}"
+
+  deploySDILab:
+    # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    name: Deploy SDI Lab Application
+    runs-on: ubuntu-latest
+    needs: createSWA
+    env:
+      resourceGroup: ${{ needs.createSWA.outputs.resourceGroup }}
+      swaName: ${{ needs.createSWA.outputs.swaName }}
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: false
+
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v3
+      #   with:
+      #     dotnet-version: '7.0.x'
+      #     include-prerelease: false
+
+      # - name: 'Run Tests'
+      #   run: dotnet test --configuration Release **/*Tests.csproj   
+          
+      # - name: Client Build
+      #   run: dotnet publish ./Client/Client.csproj --output ./dist/client
+
+      # - name: Api Build
+      #   run: dotnet publish ./Api/Api.csproj --output ./dist/api
+
+      - name: Az CLI login
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+      - name: Get SWA deployment token
+        id: get-secret-from-cli
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.42.0
+          inlineScript: |
+            SWA_SECRETS=$(az staticwebapp secrets list -n $swaName -g $resourceGroup --query 'properties.apiKey' -o tsv )
+            echo "::add-mask::$SWA_SECRETS"
+            echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
+
+      - name: Deploy Artifacts to SWA
+        run: |
+          npm install -g @azure/static-web-apps-cli
+          swa deploy -a src --deployment-token ${{ steps.get-secret-from-cli.outputs.SWA_SECRETS }} --env production
+        # swa deploy -a dist/client/wwwroot -i dist/api --deployment-token ${{ steps.get-secret-from-cli.outputs.SWA_SECRETS }} --env production
+
+  # build_and_deploy_job:
+  #   #if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  #   runs-on: ubuntu-latest
+  #   name: Build and Deploy
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: true
+  #     - name: Build And Deploy
+  #       id: builddeploy
+  #       uses: Azure/static-web-apps-deploy@v1
+  #       with:
+  #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GROUND_0140B1503 }}
+  #         repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+  #         action: "upload"
+  #         ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+  #         # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+  #         app_location: "src" # App source code path
+  #         #api_location: "api" # Api source code path - optional
+  #         #output_location: "wwwroot" # Built app content directory - optional
+  #         ###### End of Repository/Build Configurations ######
+
+  # close_pull_request_job:
+  #   if: github.event_name == 'pull_request' && github.event.action == 'closed'
+  #   runs-on: ubuntu-latest
+  #   name: Close Pull Request Job
+  #   steps:
+  #     - name: Close Pull Request
+  #       id: closepullrequest
+  #       uses: Azure/static-web-apps-deploy@v1
+  #       with:
+  #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GROUND_0140B1503 }}
+  #         action: "close"
 
   # listSWA:
   #   name: List SWA
