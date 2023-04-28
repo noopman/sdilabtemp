@@ -18,7 +18,7 @@ permissions:
 env:
   Subscription: 42418c1f-e6af-41ea-aa9e-41ba0fbff635 # Hard coded for now
   Region: westeurope
-  AppEnvironment: Development # Or Demo
+  AppEnvironment: Demo # Development or Demo
   ResourceGroupPrefix: rg-sdilab
 
 jobs:
