@@ -173,18 +173,3 @@ jobs:
   #       with:
   #         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLUE_GROUND_0140B1503 }}
   #         action: "close"
-
-  # listSWA:
-  #   name: List SWA
-  #   runs-on: ubuntu-latest
-  #   needs: createSWA
-  #   env:
-  #     swaName: ${{ needs.createSWA.outputs.swaName }}
-  #   steps:
-
-  #     - name: Write value
-  #       uses: azure/CLI@v1
-  #       with:
-  #         azcliversion: 2.42.0
-  #         inlineScript: |
-  #           echo "The name is: $swaName"
