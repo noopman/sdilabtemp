@@ -69,15 +69,15 @@ jobs:
             echo "Subscription: $(az account show --query "name")"
 
             echo "Resource group: $rg"
-            # az group create -n $rg -l $Region
+            az group create -n $rg -l $Region
 
             echo "Parameters: $param"
-            # res=$(az deployment group create \
-            #   --resource-group $rg \
-            #   --parameters $param \
-            #   --template-file "Templates/main.bicep" \
-            #   --query "properties.outputs.swaName.value")
-            # echo "The SWA app name: $res"
+            res=$(az deployment group create \
+              --resource-group $rg \
+              --parameters $param \
+              --template-file "Templates/main.bicep" \
+              --query "properties.outputs.swaName.value")
+            echo "The SWA app name: $res"
 
             echo "resourceGroup=$rg" >> $GITHUB_OUTPUT
             echo "swaName=$res" >> $GITHUB_OUTPUT
