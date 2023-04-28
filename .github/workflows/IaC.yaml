@@ -39,10 +39,11 @@ jobs:
             #   --resource-group $ResourceGroup \
             #   --template-file Templates/main.bicep \
             #   --parameters Environments/development.parameters.json
-            h=$(az --version)
-            echo "The result is: $h"
-            echo "swa-name=$(h | ConvertFrom-Json).properties.outputs.swaName.value" >> "$GITHUB_OUTPUT"
-            # echo "::set-output name=swa-name::$(output | ConvertFrom-Json).properties.outputs.swaName.value"
+            res=$(az --version)
+            echo "The result is: $res"
+            echo "::set-output name=swa-name::$h"
+            # echo "swa-name=$(( | ConvertFrom-Json).properties.outputs.swaName.value)" >> "$GITHUB_OUTPUT"
+            # echo "::set-output name=swa-name::$((output | ConvertFrom-Json).properties.outputs.swaName.value)"
 
       - name: Write value
         uses: azure/CLI@v1
