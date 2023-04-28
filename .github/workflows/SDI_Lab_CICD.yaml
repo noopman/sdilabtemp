@@ -56,27 +56,27 @@ jobs:
             elif [ $AppEnvironment == "Demo" ]
             then
               echo "Using demo parameters"
-              rg = "$ResourceGroupPrefix-demo"
+              rg="$ResourceGroupPrefix-demo"
               param="Environments/demo.parameters.json"
             else
               echo "Unknown environment"
               exit 1
             fi
 
-            echo "Selecting subscription."
-            az account set --subscription $Subscription
-            echo "Subscription: $(az account show --query "name")"
+            # echo "Selecting subscription."
+            # az account set --subscription $Subscription
+            # echo "Subscription: $(az account show --query "name")"
 
-            echo "Resource group: $rg"
-            az group create -n $rg -l $Region
+            # echo "Resource group: $rg"
+            # az group create -n $rg -l $Region
 
-            echo "Parameters: $param"
-            res=$(az deployment group create \
-              --resource-group $rg \
-              --parameters $param \
-              --template-file "Templates/main.bicep" \
-              --query "properties.outputs.swaName.value")
-            echo "The SWA app name: $res"
+            # echo "Parameters: $param"
+            # res=$(az deployment group create \
+            #   --resource-group $rg \
+            #   --parameters $param \
+            #   --template-file "Templates/main.bicep" \
+            #   --query "properties.outputs.swaName.value")
+            # echo "The SWA app name: $res"
 
             echo "resourceGroup=$rg" >> $GITHUB_OUTPUT
             echo "swaName=$res" >> $GITHUB_OUTPUT
@@ -132,6 +132,8 @@ jobs:
           azcliversion: 2.42.0
           inlineScript: |
             echo "The SWA app to deploy to: $resourceGroup/$swaName"
+            echo "Ending in error."
+            exit 1
             SWA_SECRETS=$(az staticwebapp secrets list -n $swaName -g $resourceGroup --query 'properties.apiKey' -o tsv)
             echo "::add-mask::$SWA_SECRETS"
             echo SWA_SECRETS=$SWA_SECRETS >> $GITHUB_OUTPUT
