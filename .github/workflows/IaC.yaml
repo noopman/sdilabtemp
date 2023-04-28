@@ -40,8 +40,8 @@ jobs:
             #   --template-file Templates/main.bicep \
             #   --parameters Environments/development.parameters.json
             res=$(az --version)
-            echo "The result is: $res"
-            echo "::set-output name=swa-name::$h"
+            echo "The result is: ||$res||"
+            echo "::set-output name=swa-name::$res"
             # echo "swa-name=$(( | ConvertFrom-Json).properties.outputs.swaName.value)" >> "$GITHUB_OUTPUT"
             # echo "::set-output name=swa-name::$((output | ConvertFrom-Json).properties.outputs.swaName.value)"
 
