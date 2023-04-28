@@ -35,11 +35,11 @@ jobs:
           azcliversion: 2.42.0
           inlineScript: |
             # az group create -n $ResourceGroup -l $Region
-            # res = az deployment group create \
-            #   --resource-group $ResourceGroup \
-            #   --template-file Templates/main.bicep \
-            #   --parameters Environments/development.parameters.json
-            res=$(az --version)
+            res=$(az deployment group create \
+              --resource-group $ResourceGroup \
+              --template-file 'Templates/main.bicep' \
+              --parameters 'Environments/development.parameters.json')
+            #res=$(az --version)
             echo "The result is: ||$res||"
             echo "::set-output name=swa-name::$res"
             # echo "swa-name=$(( | ConvertFrom-Json).properties.outputs.swaName.value)" >> "$GITHUB_OUTPUT"
