@@ -51,12 +51,12 @@ jobs:
             if [ $AppEnvironment == "Development" ]
             then
               echo "Using development parameters"
-              rg="$ResourceGroup-dev"
+              rg="$ResourceGroupPrefix-dev"
               param="Environments/development.parameters.json"
             elif [ $AppEnvironment == "Demo" ]
             then
               echo "Using demo parameters"
-              rg = "$ResourceGroup-demo"
+              rg = "$ResourceGroupPrefix-demo"
               param="Environments/demo.parameters.json"
             else
               echo "Unknown environment"
